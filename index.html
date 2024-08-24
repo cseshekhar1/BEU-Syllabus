@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEU Syllabus</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .custom-page {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+        }
+
+        footer a {
+            color: #ff9;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-page">
+        <h1>BEU Syllabus</h1>
+        <label for="branch">Select Your Branch:</label>
+        <select id="branch" onchange="enableBranchSelection()">
+            <option value="Select Branch">Select Branch</option>
+            <option value="CE">CE</option>
+            <option value="CS">CS</option>
+            <option value="EE">EE</option>
+            <option value="EC">EC</option>
+            <option value="ME">ME</option>
+        </select>
+
+        <label for="branchNumber">Select Semester:</label>
+        <select disabled="disabled" id="branchNumber">
+            <option value="Select Semester">Select Semester</option>
+            <option value="1">1st</option>
+            <option value="2">2nd</option>
+            <option value="3">3rd</option>
+            <option value="4">4th</option>
+            <option value="5">5th</option>
+            <option value="6">6th</option>
+            <option value="7">7th</option>
+            <option value="8">8th</option>
+        </select>
+
+        <div class="error" id="branchError"></div>
+        <div class="error" id="branchNumberError"></div>
+
+        <button onclick="displayResult()">View Syllabus</button>
+        <div id="result"></div>
+    </div>
+
+    <footer>
+        <p>Created by <a href="https://instagram.com/cseshekhar" target="_blank">@cseshekhar</a></p>
+    </footer>
+
+    <script>
+        const branchLinks = {
+            CE: [
+                "https://docs.google.com/uc?export=download&id=1kQg7FO2r3a2yyZGZ9ThQ9cruxBaSAc5E",
+                "https://docs.google.com/uc?export=download&id=1mtMQm6BFIHb6d7LD_VXGwwARX2TH48tJ",
+                "https://docs.google.com/uc?export=download&id=1_MCFnRu4--eFk63Kcl3DOVAMmOdTidSu",
+                "https://docs.google.com/uc?export=download&id=1AxnC52LbSoqMIVA9NZk_dkPsE0LPPNln",
+                "https://docs.google.com/uc?export=download&id=1o0ieHKUGRgFj6lyIfE0k8bD_YccgRsS1",
+                "https://docs.google.com/uc?export=download&id=199QSq3RHl5imQrwdAY13usQwo-jILtk9",
+                "https://docs.google.com/uc?export=download&id=1l6r73fBntjjMDE3DnoCJ6YOuJKUsOfpG"
+            ],
+            ME: [
+                "https://docs.google.com/uc?export=download&id=1ZI7Ssb0rpAKG0xByWHRZCL8GAHhGIhQJ",
+                "https://docs.google.com/uc?export=download&id=12KVc8Se7WrHMWlNCT75scOcasv5hqI5i",
+                "https://docs.google.com/uc?export=download&id=1ad6J8hAehBRfHZJy2-lJ_7r9N51bVgBR",
+                "https://docs.google.com/uc?export=download&id=1-Hd_veE0lx39kingmX0JfME4KIZgQIDw",
+                "https://docs.google.com/uc?export=download&id=1vmeOiGWlVW8a353acZDYVquz1B2_2MA9",
+                "https://docs.google.com/uc?export=download&id=1bwGcRxw0H3qPJ6rfEwMiiRhc2e8bzcz7",
+                "https://docs.google.com/uc?export=download&id=1xqHKy-9Ae4mxoaYQgMMs7Ww9wg4ORaUp"
+            ],
+            EE: [
+                "https://docs.google.com/uc?export=download&id=1EvWsW_9VfN8cCGrTLX_nSSbIwftSMqz9",
+                "https://docs.google.com/uc?export=download&id=1x5XvGTCMP3OQ4gOD5X8BXdQTZOIHVmtW",
+                "https://docs.google.com/uc?export=download&id=1WRjNBTJUJqA4JGzuVdnBW7hbpC5o93lP",
+                "https://docs.google.com/uc?export=download&id=1ZnYPXGOvopwlD4A_bQrHqR5K-x43dnpe",
+                "https://docs.google.com/uc?export=download&id=1dnFf5X1z1z6tiGk7sDTZIN9mhGHTxcJ9",
+                "https://docs.google.com/uc?export=download&id=1-sT272zCMxVqp9jL4_80zoClEzE--o0r",
+                "https://docs.google.com/uc?export=download&id=1_xcPKZvCT1avsZBypJIQ2OzMbNAcKJ78"
+            ],
+            EC: [
+                "https://docs.google.com/uc?export=download&id=1Z_uIqFFve_WNWZmW7ghbo0TmngOhNGQc",
+                "https://docs.google.com/uc?export=download&id=1pGoXGR0RfXfRvkeJy_nxiA-E_YIFy35b",
+                "https://docs.google.com/uc?export=download&id=1cDvVPlLDC0ziZCUz31rtqs8cSij8XLhq",
+                "https://docs.google.com/uc?export=download&id=1Odjrqru3hIkCSBD4tutxWRoE4ruSMz-m",
+                "https://docs.google.com/uc?export=download&id=1iZE2-nGPyevgeM7HE8Xt5SnKqzSTNfLh",
+                "https://docs.google.com/uc?export=download&id=14QlVfyR70AgRzyDaLmOBDbVLoLUb7T5z",
+                "https://docs.google.com/uc?export=download&id=1IZAgJM44r5P-fuohdinxDU2aU7G4fMep"
+            ],
+            CS: [
+                "https://docs.google.com/uc?export=download&id=1w73Q_Lf5D5N21hDs5NUf1OlrOmQU9FDs",
+                "https://docs.google.com/uc?export=download&id=1qG35rzdLe3q09S2m8LL-FUy5RBiQmytd",
+                "https://docs.google.com/uc?export=download&id=12Lg062__HyX6viANPcvWLqjuceauVuWO",
+                "https://docs.google.com/uc?export=download&id=1MG_6jw2E7C2qkL4usErddg4APGZRqG2x",
+                "https://docs.google.com/uc?export=download&id=1rz5bRA_mEyRVt7pG0iICGOSYUwzRzbl8",
+                "https://docs.google.com/uc?export=download&id=1GEah9uYzM1DCFR1Koqnd0RbuEyG-i4h2",
+                "https://docs.google.com/uc?export=download&id=1cFf_1NH53yf7-RoBlmWWzzQw3daP1P7J"
+            ]
+        };
+
+        function enableBranchSelection() {
+            const branchSelect = document.getElementById('branch');
+            const branchNumberSelect = document.getElementById('branchNumber');
+            branchNumberSelect.disabled = branchSelect.value === 'Select Branch';
+            if (branchNumberSelect.disabled) {
+                branchNumberSelect.value = 'Select Semester';
+            }
+        }
+
+        function displayResult() {
+            const branchSelect = document.getElementById('branch');
+            const branchNumberSelect = document.getElementById('branchNumber');
+            const resultDiv = document.getElementById('result');
+            const branchError = document.getElementById('branchError');
+            const branchNumberError = document.getElementById('branchNumberError');
+
+            if (branchSelect.value === 'Select Branch') {
+                branchError.textContent = 'Please select a branch.';
+                resultDiv.innerHTML = '';
+                return;
+            } else {
+                branchError.textContent = '';
+            }
+
+            if (branchNumberSelect.value === 'Select Semester') {
+                branchNumberError.textContent = 'Please select a semester.';
+                resultDiv.innerHTML = '';
+                return;
+            } else {
+                branchNumberError.textContent = '';
+            }
+
+            const selectedBranch = branchSelect.value;
+            const selectedSemester = branchNumberSelect.value;
+            const links = branchLinks[selectedBranch];
+
+            if (links) {
+                const semesterIndex = parseInt(selectedSemester) - 1;
+                if (semesterIndex >= 0 && semesterIndex < links.length) {
+                    resultDiv.innerHTML = `
+                        <p>Here is your syllabus for ${selectedBranch} - ${selectedSemester}:</p>
+                        <a href="${links[semesterIndex]}" target="_blank">Download Syllabus</a>
+                    `;
+                } else {
+                    resultDiv.innerHTML = 'Invalid semester selected.';
+                }
+            } else {
+                resultDiv.innerHTML = 'Invalid branch selected.';
+            }
+        }
+    </script>
+</body>
+</html>
